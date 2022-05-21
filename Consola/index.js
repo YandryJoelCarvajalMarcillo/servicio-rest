@@ -138,7 +138,7 @@ do{
 
 
       case"3":
-      await pausa(console.log("Aqui va tu wbd"));
+      await pausa(console.log("Aqui va"));
 
       //sesion del superadministrador
       //Envias menus de opciones  de superadmin
