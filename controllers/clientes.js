@@ -14,7 +14,8 @@ const CrearCliente = async (req, res)=>{
     const SalaNueva = await sala.save();
     res.status(201).json(SalaNueva);
 }
+
 module.exports={
     VerCliente,
-    CrearCliente
+    CrearCliente,
 }

@@ -1,13 +1,13 @@
 require("colors");
-const mongoose = require ('mongoose');
+const axios = require('axios');
 const { menu ,TipoUsuario,Sesion,Menucliente, pausa,Registrar,Buscamos,ListaBuscar,VerReserva,Pago} = require("./menus");
-var {Cliente,Tipo_sala,Salas,Empresas,Administradors,Reservas, AdminG} = require('./Cliente');
-const conexion="mongodb+srv://josereyes0215:Teodolinda15@cluster0.frhsy.mongodb.net/Salas_Tarea?retryWrites=true&w=majority";
 let usuarios;
+var tipo_sala;
 const principal = async () => {
   try {
     let resmenu;
     let restipo;
+    var rest;
     do {
         
     resmenu = await menu();
@@ -20,31 +20,22 @@ const principal = async () => {
       break;
       case "2":// ver tareas
       restRegistro = await Registrar();
-      mongoose.connect('mongodb+srv://josereyes0215:Teodolinda15@cluster0.frhsy.mongodb.net/Salas_Tarea?retryWrites=true&w=majority', function (err) {
-        if (err) throw err;
-         
-        console.log('Successfully connected');
-         
-        var jamieAuthor = new Cliente({
-            _id: new mongoose.Types.ObjectId(),
-            nombre:restRegistro.nombre, //con el string representamos y manipulamos una secuencia de caracteres.
-            Usuario:restRegistro.Usuario,
-            Celular:restRegistro.Celular,
-            Correo:restRegistro.Correo,
-             Contrasena:restRegistro.Contrasena,
-        });
-     
-        jamieAuthor.save(function(err) {
-            if (err) throw err;
-
-            
-        });
-       
-    });
-     //Guardamos en la base de datos.
-     await pausa(console.log('Cliente successfully saved.'));
-
-      
+       pausa(console.log(restRegistro));
+      var postData = {
+        nombre: restRegistro.nombre,
+        Usuario:restRegistro.Usuario ,
+        Celular:restRegistro.Celular ,
+        Correo: restRegistro.Correo ,
+        Contrasena: restRegistro.Contrasena
+      };
+    //Guardamos en la base de datos.
+      axios.post('http://localhost:3000/v1/salaevento/api/cliente/', postData)
+      .then( async function (res) {
+        await  pausa(console.log(res.data));
+      })
+      .catch(function (err) {
+        pausa(console.log(err));
+      }); 
       break;
       
     }
@@ -68,15 +59,32 @@ await pausa(console.log(restipo));
     switch (restipo) {
       
       case "1": // Casa para iniciar sesion
-   let restsesion;
+   let restsesiones;
+  
 do{
   //llamamos al capturador de datos
  restsesion = await Sesion();
      await pausa(console.log(restsesion));
-     //retorno los resultados de la busqueda
-     ressesion = await BuscarUsuario(restsesion);
-      await pausa(console.log(ressesion.length));
-}while(ressesion.length==0)
+   
+   
+   axios.get('http://localhost:3000/v1/salaevento/api/cliente/sesion', {params: {
+      Usuario: restsesion.Usuario,Contrasena:restsesion.Contrasena }})
+    .then( async function (res) {
+     
+      usuarios=res.data;
+      await  pausa(console.log(usuarios));
+    })
+    .catch(function (err) {
+      pausa(console.log(err));
+    }); 
+
+    await  pausa(console.log(usuarios));
+ 
+
+//retorno los resultados de la busqueda
+   //  ressesion = await BuscarUsuario(restsesion);
+    //  await pausa(console.log(ressesion.length));
+}while(usuarios==0)
 
 /*
 do{
@@ -86,13 +94,29 @@ do{
        await pausa(console.log(ressesion.length));
  }while(ressesion.length==0)
 */
- usuarios=ressesion;
  await pausa(console.log(usuarios[0]._id));
         restcliente = await Menucliente(usuarios); 
         await pausa(console.log(restcliente));
         switch(restcliente){
           case "1": // agregar tarea para tipo de sala para alquilar
           await pausa(console.log("Buscamos por tipo"));
+             axios.get('http://localhost:3000/v1/salaevento/api/tipo_sala')
+          .then( async function (res) {
+          tipo_sala=res.data;
+           
+          })
+          .catch(function (err) {
+            pausa(console.log(err));
+          }); 
+
+await  pausa(console.log(tipo_sala));
+
+
+const resultado=await Buscamos(tipo_sala);
+
+await  pausa(console.log(resultado));
+resala = await salas_tipo(resultado);
+/*
           restipos = await buscar();
           await pausa(console.log(restipos));
           resala = await salas_tipo(restipos);
@@ -103,9 +127,10 @@ do{
           //Para finalizar una tarea
           await pausa(console.table(table));
         
-
+*/
 
           break;
+
           case "2": // asgregar tarea para reservar 
           await pausa(console.log("aqui va las reservas "));
           restipos = await buscar();
@@ -138,7 +163,7 @@ do{
 
 
       case"3":
-      await pausa(console.log("Aqui va"));
+      await pausa(console.log("Aqui va tu wbd"));
 
       //sesion del superadministrador
       //Envias menus de opciones  de superadmin
@@ -256,13 +281,22 @@ return conwe;
 
 const
 salas_tipo = async (restipos) => {
-  await pausa(console.log(restipos));
-  const estadoConectado=await mongoose.connect(conexion) 
-  const datos={idTipo:`${restipos.idTipo}`};
-  await pausa(console.log(datos));
- const conwe= await Salas.find(datos)
-  await pausa(console.log(conwe));
-return conwe;
+
+ 
+axios.get('http://localhost:3000/v1/salaevento/api/salas/id', {params: {
+  _id: restipos }})
+.then( async function (res) {
+ 
+  
+  let table=[res.data[0]] 
+         
+ 
+  //Para finalizar una tarea
+  await pausa(console.table(table));
+})
+.catch(function (err) {
+  pausa(console.log(err));
+}); 
 };
 //Mostramos la sala en un tabla
 const
@@ -309,5 +343,5 @@ ver = async (restipos) => {
 };
 
 
-segundo();
+principal();
 module.exports ={buscar};

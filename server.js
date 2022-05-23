@@ -11,6 +11,8 @@ class Server {
             '/api/salas',
             Cliente:
             '/api/cliente',
+            reservas:
+            '/api/reserva',
         }
         this.conectarBD();
         this.middlewares();
@@ -31,7 +33,9 @@ class Server {
         this.app.use(this.paths.salas
             , require('./routes/salas') );
             this.app.use(this.paths.Cliente
-                , require('./routes/clientes') )
+                , require('./routes/clientes') );
+                this.app.use(this.paths.Cliente
+                    , require('./routes/reserva') )
     }
     listen(){
         this._express.listen(this.port, ()=>{

@@ -1,8 +1,7 @@
 require('colors');
 const moment = require('moment');
 const inquerer = require('inquirer');
-let resultado = require('./Cliente');
-var {Cliente,Tipo_sala,Salas,Empresas,Administradors,Reservas,} = require('./Cliente');
+
 const preguntas =[/* vector de preguntas menu */
     {
       type: "list",
@@ -310,8 +309,8 @@ const pausa = async (mensaje)=>{
   return pause;
 }
 
-
-const buscador =[/* vector de preguntas menu */
+/*
+const buscador =[/* vector de preguntas menu 
 {
   type: "list",
   name: "opciones",
@@ -320,6 +319,7 @@ const buscador =[/* vector de preguntas menu */
   choices: [resultado]
 }
 ];
+*/
 
 //muestra los tipos de sala
 const Buscamos = async (mensaje)=>{
@@ -440,7 +440,7 @@ const ListaBuscar= async(salas)=>{
   //llamar desde process que es un objeto de node
   process.exit(0);
 };
-module.exports = {menu,TipoUsuario,Sesion,Menucliente,pausa,Registrar,buscador,Buscamos,ListaBuscar,
+module.exports = {menu,TipoUsuario,Sesion,Menucliente,pausa,Registrar,Buscamos,ListaBuscar,
   VerSala,VerReserva,Pago
  
 };

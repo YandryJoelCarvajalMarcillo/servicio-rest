@@ -1,15 +1,17 @@
 //creo una funcion moment y la requiero que me servira para las horas.
+require ('colors');
 const moment = require ('moment');
 //Creo una funcion inquirer y requiero inquirer que es una libreria que se usara para este proyecto
 const inquirer = require ('inquirer')
 
 //Creo una funcion donde colocarè el listado de preguntas que se le harà al usuario administrador.
 
-const ListaOpciones = [
+const ListaAdmin = [
     {
         type: 'list',
         name: 'opciones',
         message: 'Qué deseas hacer?',
+        loop: true,
         choices:[
             {
                 value: '1',
@@ -24,6 +26,56 @@ const ListaOpciones = [
 
     }
 ]
+
+const SesionAdmin = [
+    {
+        name: "credenciales",
+        message: "Ingrese credenciales para iniciar sesion\n",
+        choices: [
+            {
+                name: 'Usuario',
+                message: 'Ingrese el usuario admministrador',
+                default: ''
+            },
+            {
+                name: 'Contrasena',
+                mesage: 'Ingrese una contraseña',
+                default: ''
+            }
+        ]
+    }
+];
+
+
+const Register =[
+    {
+        type: 'input',
+        message: 'Escriba su Nombre y Apellido',
+        name: 'Nombre'
+    },
+    {
+        type: 'input',
+        message: 'Escriba un nombre de usuario',
+        name: 'Usuario'
+    },
+    {
+        type: 'input',
+        message: 'Digite su numero de telefono',
+        name: 'Celular'
+    },
+    {
+        type: 'input',
+        message: 'Escriba su correo electronico',
+        name: 'Correo'
+    },
+    {
+        type: 'input',
+        message: 'Escriba una contraseña',
+        name: 'Contrasena'
+    }
+]
+
+
 //Funcion asincrona
 const menux = async ()=>{
     console.log('---------------------------')
